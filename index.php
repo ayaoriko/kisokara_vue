@@ -8,38 +8,54 @@
   <title>Document</title>
   <style>
     /* 1秒かけて透明度を遷移 */
-    .v-enter-active,
-    .v-leave-active {
-      transition: opacity 1s;
-    }
-
-    /* 見えなくなるときの透明度 */
-    .v-enter,
-    .v-leave-to {
-      opacity: 0;
+    .v-move {
+      transition: transform 1s;
     }
   </style>
 </head>
 
 <body>
   <div id="app">
-    <p><button v-on:click="show=!show">切り替え</button></p>
-    <transition>
-      <div v-show="show">
-        トランジションさせたい要素
-      </div>
-    </transition>
+    <button v-on:click="order=!order">切り替え</button>
+    <transition-group tag="ul" class="li">
+      <li v-for="item in sortedList" v-bind:key="item.id">
+        {{ item.name }} {{ item.price }}円
+      </li>
+    </transition-group>
   </div>
 
 
   <script src="node_modules/vue/dist/vue.min.js"></script>
   <script src="node_modules/axios/dist/axios.min.js"></script>
+  <script src="node_modules/lodash/lodash.js"></script>
   <script>
     (function () {
       new Vue({
         el: '#app',
         data: {
-          show: true
+          order: false,
+          list: [
+            {
+              id: 1,
+              name: 'もんすたー1',
+              price: 100,
+            },
+            {
+              id: 2,
+              name: 'もんすたー2',
+              price: 200,
+            },
+            {
+              id: 3,
+              name: 'もんすたー3',
+              price: 300,
+            },
+          ]
+        },
+        computed: {
+          sortedList: function(){
+            return _.orderBy(this.list, 'price', this.order ? 'desc' : 'asc')
+          }
         }
       })
     })();
